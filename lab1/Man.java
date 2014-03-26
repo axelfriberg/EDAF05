@@ -17,6 +17,10 @@ public class Man {
 	}
 
 	public Woman topPick(){
-		return pref.get(0);
+		return pref.remove(0);
+	}
+
+	public boolean proposedToAll(){
+ 		return !pref.isEmpty();
 	}
 }
