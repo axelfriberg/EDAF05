@@ -23,9 +23,9 @@ public class Woman {
 		return partner;
 	}
 
-	public void setPrefList(int [] list){
-		int[] invPref = new int[list.length];
-		for(int i=0; i<list.length-1; i++){
+	public void setPrefList(int[] list){
+		int[] invPref = new int[list.length*2];
+		for(int i=0; i<list.length; i++){
 			invPref[list[i]] = i;
 		}
 		pref = invPref;

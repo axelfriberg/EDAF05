@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Man {
-	private ArrayList<Woman> pref;
+	private ArrayList<Integer> pref;
 	private String name;
 	private int id;
 	private String partner;
@@ -10,11 +10,11 @@ public class Man {
 		partner = "Forever Alone";
 		this.name = name;
 		this.id = id;
-		pref = new ArrayList<Woman>();
+		pref = new ArrayList<Integer>();
 	}
 
-	public void addPref(int index, Woman w){
-		pref.add(index, w);
+	public void addPref(int w){
+		pref.add(w);
 	}
 
 	public int getId(){
@@ -25,15 +25,19 @@ public class Man {
 		return name + " -- " + partner;
 	}
 
-	public Woman topPick(){
+	public int topPick(){
 		if(!pref.isEmpty()){
 		partner = pref.get(0).toString();
 		 return pref.remove(0);	
 		}
-		return null;
+		return -1;
 	}
 
 	public boolean proposedToAll(){
  		return pref.isEmpty();
+	}
+
+	public void engage(String w){
+		partner = w;
 	}
 }
