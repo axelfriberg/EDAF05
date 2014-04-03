@@ -1,0 +1,18 @@
+#!/bin/bash
+path=/usr/local/cs/edaf05/lab1
+for file in $path/*.in 
+do
+	name=${file##*/}
+	echo "TESTING $name" 
+	#if [ $name = "sm-random-5000.in" ] 
+	#then 
+	#	continue	
+	#fi
+
+	#/usr/bin/time -f "%e" java -Xms2G GS < $file > ${name%%.*}.mine
+	#diff ${file%%.*}.out ${name%%.*}.mine
+
+	#CHANGE GS TO THE NAME OF YOUR EXECUTABLE
+	/usr/bin/time -f "%e" java -Xms2G StableMarriages $file | diff - ${file%%.*}.out > $name.diff
+
+done
