@@ -3,8 +3,7 @@ import java.io.*;
 
 public class WordLadders{
 	public static void main(String[] args) {
-		HashMap<String, LinkedList<String>> words = new HashMap<>();
-		ArrayList<Integer> nrStepsList = new ArrayList<>();
+		HashMap<String, HashSet<String>> words = new HashMap<>();
 		String word, bucketKey;
 		Scanner s1, s2; 
 		try{
@@ -17,11 +16,9 @@ public class WordLadders{
 					sb.deleteCharAt(i);
 					bucketKey = sortString(sb.toString());
 					if(!words.containsKey(bucketKey)){
-						words.put(bucketKey, new LinkedList<String>());
+						words.put(bucketKey, new HashSet<String>());
 					}
-					if(!words.get(bucketKey).contains(word)){
-						words.get(bucketKey).add(word);
-					}
+					words.get(bucketKey).add(word);
 				}
 			}
 
@@ -43,7 +40,7 @@ public class WordLadders{
   		return sorted;
 	}
 
-	private static int getDistance(HashMap<String, LinkedList<String>> words, String root, String find){
+	private static int getDistance(HashMap<String, HashSet<String>> words, String root, String find){
 		LinkedList<String> queue = new LinkedList<>();
 		HashSet<String> visited = new HashSet<>();
 		int currentNrNodes = 1;
@@ -51,7 +48,7 @@ public class WordLadders{
 		int distance = 0;
 		queue.add(root);
 		while(!queue.isEmpty()){
-			String temp = queue.remove(0);
+			String temp = queue.poll();
 			currentNrNodes--;
 			if(temp.equals(find)){
 				return distance;
@@ -70,7 +67,6 @@ public class WordLadders{
 				nextNrNodes=0;
 			}
 		}
-		int notfound = -1;
-		return notfound;
+		return -1;
 	}
 }
