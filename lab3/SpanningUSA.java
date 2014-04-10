@@ -50,7 +50,7 @@ public class SpanningUSA{
 
 			}
 
-			if(startIndex != endIndex && startIndex != -1){
+			if(startIndex != endIndex){
 				mst.add(temp);
 				if(cities.get(endIndex).size() <= cities.get(startIndex).size()){
 					cities.get(startIndex).addAll(cities.get(endIndex));
