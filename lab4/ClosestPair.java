@@ -9,10 +9,10 @@ public class ClosestPair{
 	public static void main(String[] args){
 		//Parser start
 		int dimension = 0;
-		double time = System.currentTimeMillis();
 		HashSet<Node> nodes = new HashSet<>();
 
 		try{
+			long start = System.nanoTime();
 			Scanner scanner = new Scanner(new File(args[0]));
 			String[] split;
 			String line = scanner.nextLine();
@@ -45,9 +45,7 @@ public class ClosestPair{
 			Arrays.sort(ySortedArray, yComp);
 			Arrays.sort(xSortedArray, xComp);
 
-			time = System.currentTimeMillis()-time;
-
-		    System.out.print("Time elapsed: " + time/1000 + "s" + "\t"+dimension + "\t" + dac(xSortedArray, ySortedArray)+"\n");
+		    System.out.print(dimension + "\t" + dac(xSortedArray, ySortedArray) +"\n");
 		}
 		catch (FileNotFoundException e){
 		e.printStackTrace();
@@ -57,7 +55,7 @@ public class ClosestPair{
 	private static double dac(Node[] px, Node[] py){
 		double minDist = Double.MAX_VALUE; 
 
-		if(px.length <= 3){
+		if(px.length <= 200){
 			return findClosestBrute(px);
 		}
 		int mid = px.length/2;
@@ -90,10 +88,6 @@ public class ClosestPair{
 		Node[] dArray = dList.toArray(new Node[dList.size()]);
 		Arrays.sort(dArray, yComp);
 		double newDist = Double.MAX_VALUE;
-		int index = 15;
-		if(dArray.length<15){
-			index = dArray.length;
-		}
 		for(int i = 0; i < dArray.length; i ++){
 			ArrayList<Node> tempList = new ArrayList<>();
 			for(int k = 1; k < 15; k++){
@@ -111,13 +105,6 @@ public class ClosestPair{
 		}
 
 		double minTemp; 
-		for(int i = 0; i < dArray.length; i++){
-			for(int k = i+1; k < index; k++){
-				if(dArray.length - k < 15){
-
-				}	
-			}
-		}
 
 		return minDist;
 	}
