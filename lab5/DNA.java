@@ -6,7 +6,7 @@ public class DNA{
 	private static int[][] blosum;
 	private static HashMap<String, Integer> indexMap;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) {		
 		HashMap<String, String> dnaMap = new HashMap<>();
 		indexMap = new HashMap<>();
 		blosum = new int[24][24];
@@ -17,6 +17,8 @@ public class DNA{
 
 
 		try{
+
+			//PARSER START
 			Scanner scanner = new Scanner(new File(args[0]));
 			Scanner matrixScan = new Scanner(new File("../testfiles/lab5/BLOSUM62.txt"));
 			for (int i = 0; i < 7; i++) {
@@ -48,70 +50,52 @@ public class DNA{
 					dnaMap.put(species, dna.toString());
 				}
 			}
+			//PARSER END
 
-			System.out.println(optAlign("ACACACTA","AGCACACA"));
+			Collection<String> keySet1 = dnaMap.keySet();
+			Collection<String> keySet2 = new HashSet<>();
+			keySet2.addAll(keySet1);
 
-		}
+			for (String s1 : keySet1) {
+
+				for (String s2 : keySet2) {
+					if(!s1.equals(s2)){
+					System.out.println(s1 + " -- " + s2);
+					System.out.println(Alignment(dnaMap.get(s1),dnaMap.get(s2)));
+					}					
+				}
+				keySet2.remove(s1);
+			}
+		}		
 
 		catch (FileNotFoundException e){
 		e.printStackTrace();
-		}
-
+		}		
 	}
 
-	private static String optAlign(String dna1, String dna2){
-		int[][] matchMatrix = new int[dna1.length()+2][dna2.length()+2];
-		for(int i = 1; i < dna1.length()+1; i++){
-			for(int j = 1; j < dna2.length()+1; j++){
-				matchMatrix[i][j] = blosum[indexMap.get(Character.toString(dna1.charAt(i-1)))][indexMap.get(Character.toString(dna2.charAt(j-1)))];
-			}
+	//Should not return int
+	private static int Alignment(String s1, String s2){
+		int[][] graph = new int[s1.length()+1][s2.length()+1];
+		graph[0][0] = 0;
+
+		for (int i = 1; i < graph[0].length; i++) {
+			graph[0][i] = graph[0][i-1] - 4;
+		}
+		
+		for (int i = 1; i < graph.length; i++) {
+			graph[i][0] = graph[i-1][0] - 4;
+		}	
+
+		int optValue = 0;
+
+		for (int i = 1; i < graph.length; i++) {
+			for (int j = 1; j < graph[0].length; j++) {
+				int index1 = indexMap.get(Character.toString(s1.charAt(i-1)));
+				int index2 = indexMap.get(Character.toString(s2.charAt(j-1)));
+				graph[i][j] = Math.max(blosum[index1][index2] + graph[i-1][j-1], Math.max(-4 + graph[i-1][j], -4 + graph[i][j-1])); 
+			}				
 		}
 
-		for(int i = 0; i < dna1.length()+1; i++){
-			matchMatrix[0][i] = -100;
-			matchMatrix[dna1.length()][i] = -100;
-		}
-		for(int i = 0; i < dna2.length()+1; i++){
-			matchMatrix[i][0] = -100;
-			matchMatrix[i][dna2.length()] = -100;
-		}
-		StringBuilder seq1 = new StringBuilder();
-		StringBuilder seq2 = new StringBuilder();
-		int k = 0;
-		int l = 0;
-		while (k < dna1.length()-1 && l < dna2.length()-1){
-			int nextStep = findMax(matchMatrix[k+1][l], matchMatrix[k][l+1], matchMatrix[k+1][l+1]);
-			if(matchMatrix[k+1][l] == nextStep){
-				seq1.append("-");
-				seq2.append(dna2.charAt(k));
-				k++;
-			}
-			if(matchMatrix[k][l+1] == nextStep){
-				seq1.append("-");
-				seq2.append(dna2.charAt(l));
-				l++;
-			}
-			if(matchMatrix[k+1][l+1] == nextStep){
-				seq1.append(dna1.charAt(k));
-				seq2.append(dna2.charAt(l));
-				k++;
-				l++;
-			}
-		}
-
-		seq1.append("\n" + seq2.toString());
-
-		for(int i = 0; i < dna1.length()+1; i++){
-			for(int j = 0; j < dna2.length()+1; j++){
-				System.out.print(matchMatrix[i][j] + "\t");
-			}
-			System.out.println();
-		}
-
-		return seq1.toString();
-	}
-
-	private static int findMax(int i, int j, int k){
-		return Math.max(i, Math.max(j, k));
-	}
+		return graph[s1.length()][s2.length()];
+	}	
 }
