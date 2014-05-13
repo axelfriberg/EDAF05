@@ -45,6 +45,37 @@ public class DNA{
 					dnaMap.put(species, dna.toString());
 				}
 			}
+			for(String s : dnaMap.keySet()){
+				for(String p : dnaMap.keySet()){
+					String dnaSeq1 = dnaMap.get(s);
+					String dnaSeq2 = dnaMap.get(p);
+					ArrayList<String> unique1 = new ArrayList<>();
+					ArrayList<String> unique2 = new ArrayList<>();
+					for(int i = 0; i < dnaSeq1.length(); i++){
+						if(!unique1.contains(Character.toString(dnaSeq1.charAt(i)))){
+							unique1.add(Character.toString(dnaSeq1.charAt(i)));
+						}
+					}
+					for(int i = 0; i < dnaSeq2.length(); i++){
+						if(!unique2.contains(Character.toString(dnaSeq2.charAt(i)))){
+							unique2.add(Character.toString(dnaSeq2.charAt(i)));
+						}
+					}
+					int[][] matchMatrix = new int[unique1.size()][unique2.size()];
+					for(int i = 0; i < unique1.size(); i++){
+						for (int j = 0; j < unique2.size(); j++) {
+							matchMatrix[i][j] = blosum[indexMap.get(unique1.get(i))][indexMap.get(unique2.get(j))];
+						}
+					}
+					for(int i = 0; i < unique1.size(); i++){
+						for (int j = 0; j < unique2.size(); j++) {
+							System.out.print(matchMatrix[i][j] + "\t");
+						}
+					System.out.println();
+					}
+				System.out.println("\n");
+				}
+			}
 		}
 
 		catch (FileNotFoundException e){
