@@ -21,6 +21,7 @@ public class DNA{
 		try{
 			Scanner scanner = new Scanner(new File(args[0]));
 			Scanner matrixScan = new Scanner(new File("../testfiles/lab5/BLOSUM62.txt"));
+			Scanner outScan = new Scanner(new File("../testfiles/lab5/HbB_FASTAs.out"));
 			for (int i = 0; i < 7; i++) {
 				matrixScan.nextLine();
 			}
@@ -40,8 +41,13 @@ public class DNA{
 				String line = scanner.nextLine();
 				StringBuilder dna = new StringBuilder();
 				if(line.contains(">")){
-					String[] split = line.split("\\s+"); 
-					species = split[0].substring(1);
+					String[] split = line.split("\\s+");
+					if(split[0].contains("Spider")){
+						species = "Spider Monkey";
+					}
+					else{
+						species = split[0].substring(1);
+					}	
 					dnaMap.put(species, "");
 					speciesList.add(species);
 				}
@@ -52,15 +58,28 @@ public class DNA{
 				}
 			}
 
-			for(String s : dnaMap.keySet()){
-				speciesList.remove(s);
-				for(int i = 0; i < speciesList.size(); i++){
-					String align = optAlign(dnaMap.get(s), dnaMap.get(speciesList.get(i)));
-					System.out.println(s + "--" + speciesList.get(i)+": " + matchValue);
+			while(outScan.hasNextLine()){
+				String line = outScan.nextLine();
+				if(line.contains(":")){
+					String creatures = line.split(":")[0];
+					String creature1 = creatures.split("--")[0];
+					String creature2 = creatures.split("--")[1];
+					String align = optAlign(dnaMap.get(creature1), dnaMap.get(creature2));
+					System.out.println(creature1 + "--" + creature2 +": " + matchValue);
 					System.out.println(align);
 					matchValue = 0;
 				}
 			}
+
+			// for(String s : dnaMap.keySet()){
+			// 	speciesList.remove(s);
+			// 	for(int i = 0; i < speciesList.size(); i++){
+			// 		String align = optAlign(dnaMap.get(s), dnaMap.get(speciesList.get(i)));
+			// 		System.out.println(s + "--" + speciesList.get(i)+": " + matchValue);
+			// 		System.out.println(align);
+			// 		matchValue = 0;
+			// 	}
+			// }
 		}
 
 		catch (FileNotFoundException e){
@@ -98,9 +117,7 @@ public class DNA{
 		}
 		seq1.reverse();
 		seq2.reverse();
-		String firstPart = seq1.toString();
-		String secondPart = seq2.toString();
-		return firstPart + "\n" + secondPart;
+		return  seq1.toString()+ "\n" + seq2.toString();
 	}
 
 	private static int[][] alignMat(String n, String m){
