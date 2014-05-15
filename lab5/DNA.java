@@ -61,7 +61,7 @@ public class DNA{
 				for (String s2 : keySet2) {
 					if(!s1.equals(s2)){
 					System.out.println(s1 + " -- " + s2);
-					System.out.println(Alignment(dnaMap.get(s1),dnaMap.get(s2)));
+					Alignment(dnaMap.get(s1),dnaMap.get(s2));
 					}					
 				}
 				keySet2.remove(s1);
@@ -74,7 +74,7 @@ public class DNA{
 	}
 
 	//Should not return int
-	private static int Alignment(String s1, String s2){
+	private static void Alignment(String s1, String s2){
 		int[][] graph = new int[s1.length()+1][s2.length()+1];
 		graph[0][0] = 0;
 
@@ -96,6 +96,30 @@ public class DNA{
 			}				
 		}
 
-		return graph[s1.length()][s2.length()];
+		int i = s1.length();
+		int j = s2.length();
+		StringBuilder sb1 = new StringBuilder();
+		StringBuilder sb2 = new StringBuilder();
+
+		while(i > 0 || j > 0){
+			if(j > 0 && (graph[i][j-1] - 4 == graph[i][j])){
+				sb1.append("-");
+				sb2.append(s2.charAt(j-1));
+				j--;
+			} else if(i-1 > 0 && (graph[i-1][j] - 4 == graph[i][j])){
+				sb1.append(s1.charAt(i-1));
+				sb2.append("-");
+				i--;			
+			} else {
+				sb1.append(s1.charAt(i-1));
+				sb2.append(s2.charAt(j-1));
+				i--;
+				j--;
+			} 				
+		}
+		
+		System.out.println(graph[s1.length()][s2.length()]);
+		System.out.println(sb1.reverse().toString() + "\n" + sb2.reverse().toString());
 	}	
+
 }
