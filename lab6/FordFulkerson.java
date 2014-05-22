@@ -7,46 +7,40 @@ public class FordFulkerson{
 	private Queue<Integer> queue;
 	private int nov;
 	private boolean[] visited;
-	private LinkedList<String> minCut;
 
 	public FordFulkerson(int nov){
 		this.nov = nov;
 		queue = new LinkedList<Integer>();
-    	parent = new int[nov + 1];
-    	visited = new boolean[nov + 1];
-    	minCut = new LinkedList<>();		
+    	parent = new int[nov];
+    	visited = new boolean[nov];	
 	}
 
-	private boolean bfs(int s, int t, int[][] residualGraph, int[][] graph){
+	private boolean bfs(int s, int t, int[][] residualGraph){
 		boolean pathFound = false;
-		int destination, node;
+		int destination, currV;
 
-		for(int v = 1; v <= nov; v++){
+		for(int v = 0; v < nov; v++){
 			parent[v] = -1;
 			visited[v] = false;
 		}
 		queue.add(s);
-		parent[s] = -1;
 		visited[s] = true;
 
 		while(!queue.isEmpty()){
-			node = queue.remove();
-			destination = 1;
+			currV = queue.remove();
+			destination = s;
 
-			while(destination <= nov){
-				if(residualGraph[node][destination]>0 && !visited[destination]){
-					parent[destination] = node;
+			while(destination < nov){
+				if(residualGraph[currV][destination] > 0 && !visited[destination]){
+					parent[destination] = currV;
 					queue.add(destination);
-					if(residualGraph[node][destination] == graph[node][destination] && residualGraph[node][destination] != Integer.MAX_VALUE){
-						minCut.add((node-1) + " " + (destination-1) + " " + graph[node][destination]);
-					}
 					visited[destination] = true;
 				}
 				destination++;
 			}
 		}
+
 		if(visited[t]){
-			minCut.clear();
 			pathFound=true;
 		}
 		return pathFound;
@@ -55,34 +49,42 @@ public class FordFulkerson{
 	public String fordFulkerson(int[][] graph, int s, int destination){
 		int u, v;
 		int maxFlow = 0;
-		int pathFlow;
-		int[][] residualGraph = new int[nov+1][nov+1];
+		int bottleneck;
+		int[][] residualGraph = new int[nov][nov];
 
-		for(int sourceV = 1; sourceV <= nov; sourceV++){
-			for(int destV = 1; destV <= nov; destV++){
+		for(int sourceV = 0; sourceV < nov; sourceV++){
+			for(int destV = 0; destV < nov; destV++){
 				residualGraph[sourceV][destV] = graph[sourceV][destV];
 			}
 		}
 
-		while(bfs(s, destination, residualGraph, graph)){
-			pathFlow = Integer.MAX_VALUE;
-			for(v = destination; v != s; v = parent[v]){
-				u = parent[v];
-				pathFlow = Math.min(pathFlow, residualGraph[u][v]);
-			}
-			for(v = destination; v != s; v = parent[v]){
-				u = parent[v];
-				residualGraph[u][v] -= pathFlow;
-				residualGraph[v][u] += pathFlow; 
-			}
-			maxFlow += pathFlow;
+		while(bfs(s, destination, residualGraph)){
+			bottleneck = Integer.MAX_VALUE;
 
+			for(v = destination; v != s; v = parent[v]){
+				u = parent[v];
+				bottleneck = Math.min(bottleneck, residualGraph[u][v]);
+			}
+
+			for(v = destination; v != s; v = parent[v]){
+				u = parent[v];
+				residualGraph[u][v] -= bottleneck;
+				residualGraph[v][u] += bottleneck; 
+			}
+			
+			maxFlow += bottleneck;
 		}
+
 		StringBuilder sb = new StringBuilder();
-		for(String string : minCut){
-			sb.append(string);
-			sb.append("\n");
+
+		for(int i = 0; i < visited.length; i++){
+			for(int j = 0; j < visited.length; j++){
+				if(visited[i] && !visited[j] && graph[i][j] > 0){
+					sb.append(i + " " + j + " " + graph[i][j] + "\n");
+				}
+			}
 		}
-		return "Max flow: " + maxFlow + "\nMin Cut:\n" + sb.toString();
+
+		return "Max flow: " + maxFlow + "\nMin Cut:\n" + sb.toString().trim();
 	}
 }

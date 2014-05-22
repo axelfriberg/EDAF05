@@ -10,10 +10,10 @@ public class MaxFlow{
 				scan.nextLine();
 			}
 
-			int[][] capacity = new int[56][56];
+			int[][] capacity = new int[55][55];
 
 			
-			for (int i = 1; i <= 119; i++) {
+			for (int i = 0; i < 119; i++) {
 				String line = scan.nextLine();
 				String [] split = line.split("\\s+");
 				int n1 = Integer.parseInt(split[0]);
@@ -22,11 +22,12 @@ public class MaxFlow{
 				if(c == -1){
 					c = Integer.MAX_VALUE;
 				}
-				capacity[n1+1][n2+1] = c;
+				capacity[n1][n2] = c;
+				capacity[n2][n1] = c;
 			}
 			
 			FordFulkerson fordFulkerson = new FordFulkerson(55);
-			System.out.println("Max Flow: " + fordFulkerson.fordFulkerson(capacity, 1, 55));
+			System.out.println(fordFulkerson.fordFulkerson(capacity, 0, 54));
 
 
 		} catch (FileNotFoundException e){
